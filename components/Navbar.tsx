@@ -1,14 +1,33 @@
 
 import React from 'react';
-import { useCallback , useState } from 'react';
+import { useCallback , useEffect, useState } from 'react';
 import NavbarItem from "./NavbarItem";
 import { BsChevronDown } from 'react-icons/bs';
 import MobileMenu from './MobileMenu';
 import AccountMenu from './AccountMenu';
 
+const TOP_SET = 66;
+
 export default function Navbar(){
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [showBackground, setShowBackground] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > TOP_SET){
+        setShowBackground(true);
+      } else{
+        setShowBackground(false);
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    }
+  })
 
   const toggleMobileMenu = useCallback(() =>{
     setShowMobileMenu((current) => (!current));
@@ -18,9 +37,11 @@ export default function Navbar(){
       setShowAccountMenu((current) => (!current));
     }, []);
 
+
+
   return (
     <nav className="w-full fixed z-40 px-4 lg:px-8">
-      <div className="
+      <div className={`
       px-4
       md: px-16
       py-4
@@ -29,9 +50,8 @@ export default function Navbar(){
       items-center
       transition
       duration-100
-      bg-zinc-900
-      bg-opacity-90
-      ">
+      ${showBackground ?  'bg-zinc-900 bg-opacity-90' : ' '}
+      `}>
         <img className="h-4 lg:h-6" src="/images/logo.png" alt="Logo"/>
         <div className="flex flex-row gap-5 ml-8 hidden lg:flex
         ">
